@@ -19,59 +19,67 @@ struct node{
 };
 typedef node* Node;
 
-void RB_Insert(Node);
-void RB_Insert_Fixup(Node);
-void RB_Delete(Node);
-void RB_Delete_Fixup(Node);
-void display(Node);
-void Increase(int);
-void Reduce(int);
-int InRange(int, int);
-void Next(int);
-void Previous(int);
-void Count(int);
-void RB_Transplant(Node, Node);
-Node TreeSearch(int);
-Node TreeMinimum(Node);
-Node TreeMaximum(Node);
-Node Successor(Node);
-Node Predecessor(Node);
-void sumRange(Node,int,int,int&);
+class RBTree{
+	Node T;
+	Node Tnil;
 
-Node T;
-Node Tnil;
+public:
+	RBTree(){
+		Tnil = new node;
+		Tnil->color = BLACK;
+		Tnil->event.ID = 0; Tnil->event.count = 0;
+		T = Tnil;
+	}
+	void RB_Insert(Node);
+	void RB_Insert_Fixup(Node);
+	void RB_Delete(Node);
+	void RB_Delete_Fixup(Node);
+	void Increase(int);
+	void Reduce(int);
+	int InRange(int, int);
+	void Next(int);
+	void Previous(int);
+	void Count(int);
+	void display();
+	void inorder(Node x);
+	void RB_Transplant(Node, Node);
+	Node TreeSearch(int);
+	Node TreeMinimum(Node);
+	Node TreeMaximum(Node);
+	Node Successor(Node);
+	Node Predecessor(Node);
+	void sumRange(Node,int,int,int&);
+	void LeftRotate(Node);
+	void RightRotate(Node);
+};
 
 int main() {
-   Tnil = new node;
-   Tnil->color = BLACK;
-   Tnil->event.ID = 0; Tnil->event.count = 0;
-   T = Tnil;
-   int sum = 0;
+   RBTree RB;
    int ID = 1;
    do{
 	   cout<<"Enter ID or 0: ";
 	   cin>>ID;
 	   if(ID != 0){
-	   Increase(ID);}
-	   display(T);
+	   RB.Increase(ID);}
+	   RB.display();
    }while(ID != 0);
    do{
 	   	   cout<<"Enter ID or 0: ";
       	   cin>>ID;
       	   if(ID != 0){
-      		   Count(ID);
-      		   Previous(ID);
-      		   Next(ID);
+      		   RB.Count(ID);
+      		   RB.Previous(ID);
+      		   RB.Next(ID);
       	   }
          }while(ID != 0);
    return 0;
 }
-void Increase(int ID){
+void RBTree::Increase(int ID){
 	Node new_node = new node;
 	new_node->event.ID = ID;
 	RB_Insert(new_node);
 }
-void Reduce(int ID){
+void RBTree::Reduce(int ID){
 	Node x = TreeSearch(ID);
 	if(x != Tnil){
 		if(x->event.count > 1){
@@ -82,12 +90,12 @@ void Reduce(int ID){
 		}
 	}
 }
-void Count(int ID){
+void RBTree::Count(int ID){
 	Node x = TreeSearch(ID);
 	cout<<"Count of ID "<<ID<<"is ";
 	cout<<x->event.count<<endl;
 }
-void Next(int ID){
+void RBTree::Next(int ID){
 	Node x = T;
 	Node y = 0;
 	cout<<"NEXT ID"<<endl;
@@ -120,7 +128,7 @@ void Next(int ID){
 	}
 	cout<<x->event.ID<<" "<<x->event.count<<endl;
 }
-void Previous(int ID){
+void RBTree::Previous(int ID){
 	Node x = T;
 	Node y = 0;
 	cout<<"PREVIOUS ID"<<endl;
@@ -153,12 +161,12 @@ void Previous(int ID){
 	}
 	cout<<x->event.ID<<" "<<x->event.count<<endl;
 }
-int InRange(int ID1, int ID2){
+int RBTree::InRange(int ID1, int ID2){
 	int sum = 0;
 	sumRange(T, ID1, ID2, sum);
 	return sum;
 }
-Node Successor(Node x){
+Node RBTree::Successor(Node x){
 	Node y = 0;
 	if(x->right != Tnil){
 		return TreeMinimum(x->right);
@@ -171,7 +179,7 @@ Node Successor(Node x){
 	}
 	return y;
 }
-Node Predecessor(Node x){
+Node RBTree::Predecessor(Node x){
 	Node y = 0;
 	if(x->left != Tnil){
 		return TreeMaximum(x->left);
@@ -183,7 +191,7 @@ Node Predecessor(Node x){
 	}
 	return y;
 }
-void sumRange(Node x, int ID1, int ID2, int& sum)
+void RBTree::sumRange(Node x, int ID1, int ID2, int& sum)
 {
    if(x == Tnil) return;
    if ( ID1 < x->event.ID ){
@@ -196,13 +204,7 @@ void sumRange(Node x, int ID1, int ID2, int& sum)
      sumRange(x->right, ID1, ID2, sum);
 }
 
-void display(Node x){
-	if(x == Tnil) return;
-	cout<<x->event.ID<<x->event.count<<x->color<<" ";
-	display(x->left);
-	display(x->right);
-}
-void LeftRotate(Node x){
+void RBTree::LeftRotate(Node x){
 	cout<<"Entered Left Rotate!"<<endl;
 	Node y = x->right;
 	x->right = y->left;
@@ -223,7 +225,7 @@ void LeftRotate(Node x){
 	x->p = y;
 }
 
-void RightRotate(Node x){
+void RBTree::RightRotate(Node x){
 	cout<<"Entered Right Rotate!"<<endl;
 	Node y = x->left;
 	x->left = y->right;
@@ -244,7 +246,7 @@ void RightRotate(Node x){
 	x->p = y;
 }
 
-void RB_Insert(Node new_node){
+void RBTree::RB_Insert(Node new_node){
 	Node y = Tnil;
 	Node x = T;
 	while(x != Tnil){
@@ -278,7 +280,7 @@ void RB_Insert(Node new_node){
 	RB_Insert_Fixup(new_node);
 }
 
-void RB_Insert_Fixup(Node z){
+void RBTree::RB_Insert_Fixup(Node z){
 	Node y;
 	while((z->p->color == RED)){
 		if(z->p == z->p->p->left){
@@ -321,7 +323,7 @@ void RB_Insert_Fixup(Node z){
 	T->color = BLACK;
 }
 
-void RB_Transplant(Node u, Node v){
+void RBTree::RB_Transplant(Node u, Node v){
 	if(u->p == Tnil){
 		T = v;
 	}
@@ -334,21 +336,21 @@ void RB_Transplant(Node u, Node v){
 	v->p = u->p;
 }
 
-Node TreeMinimum(Node x){
+Node RBTree::TreeMinimum(Node x){
 	while(x->left != Tnil){
 		x = x->left;
 	}
 	cout<<"Found minimum"<<endl;
 	return x;
 }
-Node TreeMaximum(Node x){
+Node RBTree::TreeMaximum(Node x){
 	while(x->right != Tnil){
 		x = x->right;
 	}
 	return x;
 }
 
-Node TreeSearch(int ID){
+Node RBTree::TreeSearch(int ID){
 	Node x = T;
 	while(x != Tnil && x->event.ID != ID){
 		if(ID < x->event.ID){
@@ -361,7 +363,7 @@ Node TreeSearch(int ID){
 	return x;
 }
 
-void RB_Delete(Node z){
+void RBTree::RB_Delete(Node z){
 	Node y = z;
 	Node x = 0;
 	int y_org = y->color;
@@ -395,7 +397,7 @@ void RB_Delete(Node z){
 	}
 }
 
-void RB_Delete_Fixup(Node x){
+void RBTree::RB_Delete_Fixup(Node x){
 	Node w = 0;
 	while( x != T && x->color == BLACK){
 		if(x == x->p->left){
@@ -452,6 +454,17 @@ void RB_Delete_Fixup(Node x){
 		}
 	}
 	x->color = BLACK;
+}
+
+void RBTree::display(){
+	inorder(T);
+}
+
+void RBTree::inorder(Node x){
+	if(x == Tnil) return;
+	cout<<x->event.ID<<x->event.count<<x->color<<" ";
+	inorder(x->left);
+	inorder(x->right);
 }
 
 
